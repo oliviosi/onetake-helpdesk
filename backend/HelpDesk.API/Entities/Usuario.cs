@@ -26,4 +26,12 @@ public class Usuario
     public string EhAdm { get; set; } = "N";
 
     public Empresa? Empresa { get; set; }
+
+    public Cliente? Cliente { get; set; }
+
+    public ICollection<Tecnico> Tecnicos { get; set; } = new List<Tecnico>();
+
+    public ICollection<Ticket> TicketsAbertos { get; set; } = new List<Ticket>();
+
+    public ICollection<TicketInteracao> Interacoes { get; set; } = new List<TicketInteracao>();
 }
