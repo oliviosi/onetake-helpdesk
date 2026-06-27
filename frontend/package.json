@@ -1,0 +1,10 @@
+{
+  "dependencies": {
+    "@tailwindcss/postcss": "^4.3.1",
+    "jwt-decode": "^4.0.0",
+    "postcss": "^8.5.15",
+    "primeicons": "^7.0.0",
+    "primeng": "^21.1.9",
+    "tailwindcss": "^4.3.1"
+  }
+}
