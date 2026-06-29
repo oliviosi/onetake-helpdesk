@@ -1,0 +1,169 @@
+<div class="produtos-page">
+  <div class="page-header">
+    <div>
+      <h1>Produtos</h1>
+      <p>Gerencie os serviços/sistemas relacionados aos chamados.</p>
+    </div>
+
+    <button
+      pButton
+      type="button"
+      label="Novo produto"
+      icon="pi pi-plus"
+      (click)="abrirNovo()"
+    ></button>
+  </div>
+
+  <div *ngIf="erro" class="message-area">
+    <p-message severity="error" [text]="erro"></p-message>
+  </div>
+
+  <div *ngIf="sucesso" class="message-area">
+    <p-message severity="success" [text]="sucesso"></p-message>
+  </div>
+
+  <div class="card">
+    <div *ngIf="carregando" class="loading-area">
+      <p-progressSpinner></p-progressSpinner>
+    </div>
+
+    <p-table
+      *ngIf="!carregando"
+      [value]="produtos"
+      [paginator]="true"
+      [rows]="10"
+      [rowsPerPageOptions]="[10, 20, 50]"
+      [globalFilterFields]="['dscProduto']"
+      responsiveLayout="scroll"
+      styleClass="p-datatable-sm"
+    >
+      <ng-template pTemplate="caption">
+        <div class="table-caption">
+          <strong>Produtos cadastrados</strong>
+
+          <button
+            pButton
+            type="button"
+            icon="pi pi-refresh"
+            label="Atualizar"
+            severity="secondary"
+            [outlined]="true"
+            (click)="carregarProdutos()"
+          ></button>
+        </div>
+      </ng-template>
+
+      <ng-template pTemplate="header">
+        <tr>
+          <th style="width: 90px">Código</th>
+          <th>Produto</th>
+          <th style="width: 120px">Status</th>
+          <th style="width: 160px">Ações</th>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="body" let-produto>
+        <tr>
+          <td>{{ produto.idProduto }}</td>
+          <td>
+            <strong>{{ produto.dscProduto }}</strong>
+          </td>
+          <td>
+            <p-tag
+              [severity]="statusSeverity(produto.ativo)"
+              [value]="statusLabel(produto.ativo)"
+            ></p-tag>
+          </td>
+          <td>
+            <div class="actions">
+              <button
+                pButton
+                type="button"
+                icon="pi pi-pencil"
+                severity="secondary"
+                [text]="true"
+                (click)="abrirEdicao(produto)"
+              ></button>
+
+              <button
+                pButton
+                type="button"
+                icon="pi pi-ban"
+                severity="danger"
+                [text]="true"
+                *ngIf="produto.ativo === 'S'"
+                (click)="desativar(produto)"
+              ></button>
+
+              <button
+                pButton
+                type="button"
+                icon="pi pi-check"
+                severity="success"
+                [text]="true"
+                *ngIf="produto.ativo === 'N'"
+                (click)="ativar(produto)"
+              ></button>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="4" class="empty-message">
+            Nenhum produto cadastrado.
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+
+  <p-dialog
+    [(visible)]="modalVisivel"
+    [modal]="true"
+    [draggable]="false"
+    [resizable]="false"
+    [style]="{ width: '520px' }"
+    [header]="produtoEditando ? 'Editar produto' : 'Novo produto'"
+  >
+    <form class="dialog-form" (ngSubmit)="salvar()">
+      <div class="form-field">
+        <label>Descrição do produto *</label>
+        <input
+          pInputText
+          name="dscProduto"
+          [(ngModel)]="form.dscProduto"
+          autocomplete="off"
+        />
+      </div>
+
+      <div class="form-field" *ngIf="produtoEditando">
+        <label>Status</label>
+        <select name="ativo" [(ngModel)]="form.ativo">
+          <option value="S">Ativo</option>
+          <option value="N">Inativo</option>
+        </select>
+      </div>
+
+      <div class="dialog-actions">
+        <button
+          pButton
+          type="button"
+          label="Cancelar"
+          severity="secondary"
+          [outlined]="true"
+          (click)="modalVisivel = false"
+        ></button>
+
+        <button
+          pButton
+          type="submit"
+          label="Salvar"
+          icon="pi pi-save"
+          [loading]="salvando"
+        ></button>
+      </div>
+    </form>
+  </p-dialog>
+</div>
