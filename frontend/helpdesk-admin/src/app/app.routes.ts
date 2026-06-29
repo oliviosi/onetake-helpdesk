@@ -40,6 +40,11 @@ export const routes: Routes = [
                     import('./pages/tipo-ocorrencia/tipo-ocorrencia.component').then(m => m.TipoOcorrenciaComponent)
             },
             {
+                path: 'status-ticket',
+                loadComponent: () =>
+                    import('./pages/status-ticket/status-ticket.component').then(m => m.StatusTicketComponent)
+            },
+            {
                 path: '',
                 pathMatch: 'full',
                 redirectTo: 'dashboard'

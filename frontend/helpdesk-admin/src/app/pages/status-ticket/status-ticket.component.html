@@ -1,0 +1,101 @@
+<div class="status-ticket-page">
+    <div class="page-header">
+        <div>
+            <h1>Status do Ticket</h1>
+            <p>Cadastre as etapas usadas no fluxo dos chamados.</p>
+        </div>
+
+        <button pButton type="button" label="Novo status" icon="pi pi-plus" (click)="abrirNovo()"></button>
+    </div>
+
+    <div *ngIf="erro" class="message-area">
+        <p-message severity="error" [text]="erro"></p-message>
+    </div>
+
+    <div *ngIf="sucesso" class="message-area">
+        <p-message severity="success" [text]="sucesso"></p-message>
+    </div>
+
+    <div class="card">
+        <div *ngIf="carregando" class="loading-area">
+            <p-progressSpinner></p-progressSpinner>
+        </div>
+
+        <p-table *ngIf="!carregando" [value]="status" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[10, 20, 50]"
+            [globalFilterFields]="['dscStatusTicket', 'tipoTicket']" responsiveLayout="scroll"
+            styleClass="p-datatable-sm">
+            <ng-template pTemplate="caption">
+                <div class="table-caption">
+                    <strong>Status cadastrados</strong>
+
+                    <button pButton type="button" icon="pi pi-refresh" label="Atualizar" severity="secondary"
+                        [outlined]="true" (click)="carregarStatus()"></button>
+                </div>
+            </ng-template>
+
+            <ng-template pTemplate="header">
+                <tr>
+                    <th style="width: 90px">Código</th>
+                    <th>Status</th>
+                    <th style="width: 180px">Tipo</th>
+                    <th style="width: 140px">Ações</th>
+                </tr>
+            </ng-template>
+
+            <ng-template pTemplate="body" let-item>
+                <tr>
+                    <td>{{ item.idStatusTicket }}</td>
+                    <td>
+                        <strong>{{ item.dscStatusTicket }}</strong>
+                    </td>
+                    <td>
+                        <span class="status-badge" [ngClass]="classeTipoTicket(item.tipoTicket)">
+                            {{ labelTipoTicket(item.tipoTicket) }}
+                        </span>
+                    </td>
+                    <td>
+                        <div class="actions">
+                            <button pButton type="button" icon="pi pi-pencil" severity="secondary" [text]="true"
+                                (click)="abrirEdicao(item)"></button>
+
+                            <button pButton type="button" icon="pi pi-trash" severity="danger" [text]="true"
+                                (click)="excluir(item)"></button>
+                        </div>
+                    </td>
+                </tr>
+            </ng-template>
+
+            <ng-template pTemplate="emptymessage">
+                <tr>
+                    <td colspan="5" class="empty-message">
+                        Nenhum status cadastrado.
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+
+    <p-dialog [(visible)]="modalVisivel" [modal]="true" [draggable]="false" [resizable]="false"
+        [style]="{ width: '520px' }" [header]="statusEditando ? 'Editar status' : 'Novo status'">
+        <form class="dialog-form" (ngSubmit)="salvar()">
+            <div class="form-field">
+                <label>Descrição *</label>
+                <input pInputText name="dscStatusTicket" [(ngModel)]="form.dscStatusTicket" autocomplete="off" />
+            </div>
+
+            <div class="form-field">
+                <label>Tipo do ticket *</label>
+                <p-select [options]="tiposTicket" optionLabel="label" optionValue="value" placeholder="Selecione o tipo"
+                    [(ngModel)]="form.tipoTicket" name="tipoTicket" styleClass="w-full" appendTo="body"
+                    [scrollHeight]="'220px'"></p-select>
+            </div>
+
+            <div class="dialog-actions">
+                <button pButton type="button" label="Cancelar" severity="secondary" [outlined]="true"
+                    (click)="modalVisivel = false"></button>
+
+                <button pButton type="submit" label="Salvar" icon="pi pi-save" [loading]="salvando"></button>
+            </div>
+        </form>
+    </p-dialog>
+</div>
