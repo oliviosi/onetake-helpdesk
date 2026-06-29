@@ -20,10 +20,15 @@ export const routes: Routes = [
                     import('./pages/dashboard/dashboard.component').then(m => m.DashboardComponent)
             },
             {
+                path: 'clientes',
+                loadComponent: () =>
+                    import('./pages/clientes/clientes.component').then(m => m.ClientesComponent)
+            },
+            {
                 path: '',
                 pathMatch: 'full',
                 redirectTo: 'dashboard'
-            }
+            },
         ]
     },
     {

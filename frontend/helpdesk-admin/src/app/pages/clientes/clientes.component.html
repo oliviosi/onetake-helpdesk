@@ -1,0 +1,117 @@
+<div class="clientes-page">
+  <div class="page-header">
+    <div>
+      <h1>Clientes</h1>
+      <p>Gerencie os clientes que podem abrir chamados no HelpDesk.</p>
+    </div>
+
+    <button
+      pButton
+      type="button"
+      label="Novo cliente"
+      icon="pi pi-plus"
+    ></button>
+  </div>
+
+  <div *ngIf="erro" class="mb-4">
+    <p-message severity="error" [text]="erro"></p-message>
+  </div>
+
+  <div class="card">
+    <div *ngIf="carregando" class="loading-area">
+      <p-progressSpinner></p-progressSpinner>
+    </div>
+
+    <p-table
+      *ngIf="!carregando"
+      [value]="clientes"
+      [paginator]="true"
+      [rows]="10"
+      [rowsPerPageOptions]="[10, 20, 50]"
+      [globalFilterFields]="['dscCliente', 'email', 'codClienteERP']"
+      responsiveLayout="scroll"
+      styleClass="p-datatable-sm"
+    >
+      <ng-template pTemplate="caption">
+        <div class="table-caption">
+          <strong>Clientes cadastrados</strong>
+
+          <button
+            pButton
+            type="button"
+            icon="pi pi-refresh"
+            label="Atualizar"
+            severity="secondary"
+            [outlined]="true"
+            (click)="carregarClientes()"
+          ></button>
+        </div>
+      </ng-template>
+
+      <ng-template pTemplate="header">
+        <tr>
+          <th style="width: 90px">Código</th>
+          <th>Cliente</th>
+          <th>Email</th>
+          <th>ERP</th>
+          <th style="width: 120px">Status</th>
+          <th style="width: 160px">Ações</th>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="body" let-cliente>
+        <tr>
+          <td>{{ cliente.idCliente }}</td>
+          <td>
+            <strong>{{ cliente.dscCliente }}</strong>
+          </td>
+          <td>{{ cliente.email || '-' }}</td>
+          <td>{{ cliente.codClienteERP || '-' }}</td>
+          <td>
+            <p-tag
+              [severity]="statusSeverity(cliente.ativo)"
+              [value]="statusLabel(cliente.ativo)"
+            ></p-tag>
+          </td>
+          <td>
+            <div class="actions">
+              <button
+                pButton
+                type="button"
+                icon="pi pi-pencil"
+                severity="secondary"
+                [text]="true"
+              ></button>
+
+              <button
+                pButton
+                type="button"
+                icon="pi pi-ban"
+                severity="danger"
+                [text]="true"
+                *ngIf="cliente.ativo === 'S'"
+              ></button>
+
+              <button
+                pButton
+                type="button"
+                icon="pi pi-check"
+                severity="success"
+                [text]="true"
+                *ngIf="cliente.ativo === 'N'"
+              ></button>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="6" class="empty-message">
+            Nenhum cliente cadastrado.
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+</div>
