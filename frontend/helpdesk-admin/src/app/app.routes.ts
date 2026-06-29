@@ -35,6 +35,11 @@ export const routes: Routes = [
                     import('./pages/produto-x-cliente/produto-x-cliente.component').then(m => m.ProdutoXClienteComponent)
             },
             {
+                path: 'tipo-ocorrencia',
+                loadComponent: () =>
+                    import('./pages/tipo-ocorrencia/tipo-ocorrencia.component').then(m => m.TipoOcorrenciaComponent)
+            },
+            {
                 path: '',
                 pathMatch: 'full',
                 redirectTo: 'dashboard'

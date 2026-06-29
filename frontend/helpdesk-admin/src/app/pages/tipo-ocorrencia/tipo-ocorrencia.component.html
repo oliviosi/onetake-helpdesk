@@ -1,0 +1,102 @@
+<div class="tipo-ocorrencia-page">
+    <div class="page-header">
+        <div>
+            <h1>Tipos de Ocorrência</h1>
+            <p>Cadastre as categorias usadas na abertura dos chamados.</p>
+        </div>
+
+        <button pButton type="button" label="Novo tipo" icon="pi pi-plus" (click)="abrirNovo()"></button>
+    </div>
+
+    <div *ngIf="erro" class="message-area">
+        <p-message severity="error" [text]="erro"></p-message>
+    </div>
+
+    <div *ngIf="sucesso" class="message-area">
+        <p-message severity="success" [text]="sucesso"></p-message>
+    </div>
+
+    <div class="card">
+        <div *ngIf="carregando" class="loading-area">
+            <p-progressSpinner></p-progressSpinner>
+        </div>
+
+        <p-table *ngIf="!carregando" [value]="tipos" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[10, 20, 50]"
+            [globalFilterFields]="['dscTipoOcorrencia']" responsiveLayout="scroll" styleClass="p-datatable-sm">
+            <ng-template pTemplate="caption">
+                <div class="table-caption">
+                    <strong>Tipos cadastrados</strong>
+
+                    <button pButton type="button" icon="pi pi-refresh" label="Atualizar" severity="secondary"
+                        [outlined]="true" (click)="carregarTipos()"></button>
+                </div>
+            </ng-template>
+
+            <ng-template pTemplate="header">
+                <tr>
+                    <th style="width: 90px">Código</th>
+                    <th>Tipo de Ocorrência</th>
+                    <th style="width: 120px">Status</th>
+                    <th style="width: 160px">Ações</th>
+                </tr>
+            </ng-template>
+
+            <ng-template pTemplate="body" let-tipo>
+                <tr>
+                    <td>{{ tipo.idTipoOcorrencia }}</td>
+                    <td>
+                        <strong>{{ tipo.dscTipoOcorrencia }}</strong>
+                    </td>
+                    <td>
+                        <p-tag [severity]="statusSeverity(tipo.ativo)" [value]="statusLabel(tipo.ativo)"></p-tag>
+                    </td>
+                    <td>
+                        <div class="actions">
+                            <button pButton type="button" icon="pi pi-pencil" severity="secondary" [text]="true"
+                                (click)="abrirEdicao(tipo)"></button>
+
+                            <button pButton type="button" icon="pi pi-ban" severity="danger" [text]="true"
+                                *ngIf="tipo.ativo === 'S'" (click)="desativar(tipo)"></button>
+
+                            <button pButton type="button" icon="pi pi-check" severity="success" [text]="true"
+                                *ngIf="tipo.ativo === 'N'" (click)="ativar(tipo)"></button>
+                        </div>
+                    </td>
+                </tr>
+            </ng-template>
+
+            <ng-template pTemplate="emptymessage">
+                <tr>
+                    <td colspan="4" class="empty-message">
+                        Nenhum tipo de ocorrência cadastrado.
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+
+    <p-dialog [(visible)]="modalVisivel" [modal]="true" [draggable]="false" [resizable]="false"
+        [style]="{ width: '520px' }" [header]="tipoEditando ? 'Editar tipo de ocorrência' : 'Novo tipo de ocorrência'">
+        <form class="dialog-form" (ngSubmit)="salvar()">
+            <div class="form-field">
+                <label>Descrição *</label>
+                <input pInputText name="dscTipoOcorrencia" [(ngModel)]="form.dscTipoOcorrencia" autocomplete="off" />
+            </div>
+
+            <div class="form-field" *ngIf="tipoEditando">
+                <label>Status</label>
+                <select name="ativo" [(ngModel)]="form.ativo">
+                    <option value="S">Ativo</option>
+                    <option value="N">Inativo</option>
+                </select>
+            </div>
+
+            <div class="dialog-actions">
+                <button pButton type="button" label="Cancelar" severity="secondary" [outlined]="true"
+                    (click)="modalVisivel = false"></button>
+
+                <button pButton type="submit" label="Salvar" icon="pi pi-save" [loading]="salvando"></button>
+            </div>
+        </form>
+    </p-dialog>
+</div>
