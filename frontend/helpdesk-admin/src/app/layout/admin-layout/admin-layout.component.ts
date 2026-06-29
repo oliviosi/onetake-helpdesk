@@ -27,6 +27,7 @@ export class AdminLayoutComponent {
     { label: 'Tickets', icon: 'pi pi-ticket', route: '/tickets' },
     { label: 'Clientes', icon: 'pi pi-building', route: '/clientes' },
     { label: 'Produtos', icon: 'pi pi-box', route: '/produtos' },
+    { label: 'Produtos por Cliente', icon: 'pi pi-link', route: '/produto-x-cliente' },
     { label: 'Tipos de Ocorrência', icon: 'pi pi-tags', route: '/tipo-ocorrencia' },
     { label: 'Status', icon: 'pi pi-check-circle', route: '/status-ticket' },
     { label: 'Técnicos', icon: 'pi pi-users', route: '/tecnicos' }
@@ -35,7 +36,7 @@ export class AdminLayoutComponent {
   constructor(
     private authService: AuthService,
     private router: Router
-  ) {}
+  ) { }
 
   sair(): void {
     this.authService.logout();

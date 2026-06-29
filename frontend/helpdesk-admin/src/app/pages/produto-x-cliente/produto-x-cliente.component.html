@@ -1,0 +1,90 @@
+<div class="produto-x-cliente-page">
+    <div class="page-header">
+        <div>
+            <h1>Produtos por Cliente</h1>
+            <p>Defina quais produtos/sistemas cada cliente pode utilizar nos chamados.</p>
+        </div>
+    </div>
+
+    <div *ngIf="erro" class="message-area">
+        <p-message severity="error" [text]="erro"></p-message>
+    </div>
+
+    <div *ngIf="sucesso" class="message-area">
+        <p-message severity="success" [text]="sucesso"></p-message>
+    </div>
+
+    <div class="card filter-card">
+        <div class="form-grid">
+            <div class="form-field">
+                <label>Cliente</label>
+                <p-select [options]="clientes" optionLabel="descricao" optionValue="id"
+                    placeholder="Selecione um cliente" [(ngModel)]="idClienteSelecionado" [loading]="carregandoCombos"
+                    (onChange)="aoSelecionarCliente()" styleClass="w-full"></p-select>
+            </div>
+        </div>
+    </div>
+
+    <div class="card vinculo-card" *ngIf="idClienteSelecionado">
+        <div class="vinculo-form">
+            <div class="form-field">
+                <label>Produto disponível</label>
+                <p-select [options]="produtosDisponiveis()" optionLabel="descricao" optionValue="id"
+                    placeholder="Selecione um produto" [(ngModel)]="idProdutoSelecionado"
+                    styleClass="w-full"></p-select>
+            </div>
+
+            <button pButton type="button" label="Vincular" icon="pi pi-link" [loading]="salvando"
+                (click)="vincular()"></button>
+        </div>
+    </div>
+
+    <div class="card">
+        <div *ngIf="carregando" class="loading-area">
+            <p-progressSpinner></p-progressSpinner>
+        </div>
+
+        <p-table *ngIf="!carregando" [value]="vinculos" [paginator]="true" [rows]="10" responsiveLayout="scroll"
+            styleClass="p-datatable-sm">
+            <ng-template pTemplate="caption">
+                <div class="table-caption">
+                    <strong>Produtos vinculados</strong>
+
+                    <button pButton type="button" icon="pi pi-refresh" label="Atualizar" severity="secondary"
+                        [outlined]="true" [disabled]="!idClienteSelecionado" (click)="carregarVinculos()"></button>
+                </div>
+            </ng-template>
+
+            <ng-template pTemplate="header">
+                <tr>
+                    <th style="width: 90px">Código</th>
+                    <th>Produto</th>
+                    <th style="width: 120px">Status</th>
+                    <th style="width: 120px">Ações</th>
+                </tr>
+            </ng-template>
+
+            <ng-template pTemplate="body" let-vinculo>
+                <tr>
+                    <td>{{ vinculo.idProduto }}</td>
+                    <td>
+                        <strong>{{ vinculo.dscProduto }}</strong>
+                    </td>
+                    <td>{{ vinculo.ativo === 'S' ? 'Ativo' : 'Inativo' }}</td>
+                    <td>
+                        <button pButton type="button" icon="pi pi-trash" severity="danger" [text]="true"
+                            (click)="remover(vinculo)"></button>
+                    </td>
+                </tr>
+            </ng-template>
+
+            <ng-template pTemplate="emptymessage">
+                <tr>
+                    <td colspan="4" class="empty-message">
+                        Selecione um cliente ou nenhum produto vinculado.
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+</div>
