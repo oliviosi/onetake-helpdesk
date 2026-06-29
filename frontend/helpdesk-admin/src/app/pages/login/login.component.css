@@ -1,0 +1,103 @@
+:host {
+  display: block;
+  min-height: 100vh;
+}
+
+.login-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background:
+    radial-gradient(
+      circle at top left,
+      rgba(37, 99, 235, 0.18),
+      transparent 32%
+    ),
+    linear-gradient(135deg, #0f172a 0%, #1e293b 45%, #334155 100%);
+}
+
+.login-card {
+  width: 100%;
+  max-width: 440px;
+  background: #ffffff;
+  border-radius: 22px;
+  padding: 34px;
+  box-shadow: 0 24px 80px rgba(15, 23, 42, 0.35);
+}
+
+.login-brand {
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+.login-logo {
+  width: 68px;
+  height: 68px;
+  margin: 0 auto 16px;
+  border-radius: 20px;
+  background: #2563eb;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+}
+
+.login-brand h1 {
+  margin: 0;
+  font-size: 30px;
+  color: #0f172a;
+  font-weight: 800;
+}
+
+.login-brand p {
+  margin: 8px 0 0;
+  color: #64748b;
+  font-size: 15px;
+}
+
+.login-error {
+  margin-bottom: 18px;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-field label {
+  font-size: 14px;
+  color: #334155;
+  font-weight: 600;
+}
+
+.form-field input {
+  width: 100%;
+  height: 44px;
+}
+
+:host ::ng-deep .password-field {
+  width: 100%;
+  display: block;
+}
+
+:host ::ng-deep .password-input {
+  width: 100%;
+  height: 44px;
+}
+
+.login-button {
+  width: 100%;
+  height: 46px;
+  margin-top: 8px;
+  font-weight: 700;
+}
