@@ -1,0 +1,56 @@
+<div class="admin-shell">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-icon">
+        <i class="pi pi-ticket"></i>
+      </div>
+
+      <div>
+        <h1>HelpDesk</h1>
+        <span>Admin</span>
+      </div>
+    </div>
+
+    <nav class="menu">
+      <a
+        *ngFor="let item of menu"
+        [routerLink]="item.route"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: item.route === '/dashboard' }"
+        class="menu-item"
+      >
+        <i [class]="item.icon"></i>
+        <span>{{ item.label }}</span>
+      </a>
+    </nav>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <div>
+        <h2>Painel de controle</h2>
+        <p>Gerencie os chamados e cadastros do HelpDesk</p>
+      </div>
+
+      <div class="user-area">
+        <div class="user-info">
+          <strong>{{ usuario()?.nomeCompleto || usuario()?.nomeUsuario }}</strong>
+          <span>{{ usuario()?.email || 'Administrador' }}</span>
+        </div>
+
+        <button
+          pButton
+          type="button"
+          icon="pi pi-sign-out"
+          label="Sair"
+          class="logout-button"
+          (click)="sair()"
+        ></button>
+      </div>
+    </header>
+
+    <section class="content">
+      <router-outlet></router-outlet>
+    </section>
+  </main>
+</div>
