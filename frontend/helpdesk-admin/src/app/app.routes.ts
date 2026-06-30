@@ -45,6 +45,11 @@ export const routes: Routes = [
                     import('./pages/status-ticket/status-ticket.component').then(m => m.StatusTicketComponent)
             },
             {
+                path: 'tecnicos',
+                loadComponent: () =>
+                    import('./pages/tecnicos/tecnicos.component').then(m => m.TecnicosComponent)
+            },
+            {
                 path: '',
                 pathMatch: 'full',
                 redirectTo: 'dashboard'

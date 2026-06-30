@@ -25,4 +25,8 @@ export class CombosService {
     produtosPorCliente(idCliente: number): Observable<ResponseModel<Combo[]>> {
         return this.http.get<ResponseModel<Combo[]>>(`${this.apiUrl}/produtos-por-cliente/${idCliente}`);
     }
+
+    usuarios(): Observable<ResponseModel<Combo[]>> {
+        return this.http.get<ResponseModel<Combo[]>>(`${this.apiUrl}/usuarios`);
+    }
 }

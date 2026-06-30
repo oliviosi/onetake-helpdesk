@@ -1,0 +1,111 @@
+<div class="tecnicos-page">
+    <div class="page-header">
+        <div>
+            <h1>Técnicos</h1>
+            <p>Cadastre os responsáveis pelo atendimento dos chamados.</p>
+        </div>
+
+        <button pButton type="button" label="Novo técnico" icon="pi pi-plus" (click)="abrirNovo()"></button>
+    </div>
+
+    <div *ngIf="erro" class="message-area">
+        <p-message severity="error" [text]="erro"></p-message>
+    </div>
+
+    <div *ngIf="sucesso" class="message-area">
+        <p-message severity="success" [text]="sucesso"></p-message>
+    </div>
+
+    <div class="card">
+        <div *ngIf="carregando" class="loading-area">
+            <p-progressSpinner></p-progressSpinner>
+        </div>
+
+        <p-table *ngIf="!carregando" [value]="tecnicos" [paginator]="true" [rows]="10"
+            [rowsPerPageOptions]="[10, 20, 50]" [globalFilterFields]="['nome', 'nomeUsuario']" responsiveLayout="scroll"
+            styleClass="p-datatable-sm">
+            <ng-template pTemplate="caption">
+                <div class="table-caption">
+                    <strong>Técnicos cadastrados</strong>
+
+                    <button pButton type="button" icon="pi pi-refresh" label="Atualizar" severity="secondary"
+                        [outlined]="true" (click)="carregarTecnicos()"></button>
+                </div>
+            </ng-template>
+
+            <ng-template pTemplate="header">
+                <tr>
+                    <th style="width: 90px">Código</th>
+                    <th>Nome</th>
+                    <th>Usuário vinculado</th>
+                    <th style="width: 180px">Notificar chamados</th>
+                    <th style="width: 140px">Ações</th>
+                </tr>
+            </ng-template>
+
+            <ng-template pTemplate="body" let-tecnico>
+                <tr>
+                    <td>{{ tecnico.idTecnico }}</td>
+                    <td>
+                        <strong>{{ tecnico.nome }}</strong>
+                    </td>
+                    <td>{{ tecnico.nomeUsuario || '-' }}</td>
+                    <td>
+                        <p-tag [severity]="severityNotificacao(tecnico.notificarNovosChamados)"
+                            [value]="labelNotificacao(tecnico.notificarNovosChamados)"></p-tag>
+                    </td>
+                    <td>
+                        <div class="actions">
+                            <button pButton type="button" icon="pi pi-pencil" severity="secondary" [text]="true"
+                                title="Editar" (click)="abrirEdicao(tecnico)"></button>
+
+                            <button pButton type="button" icon="pi pi-trash" severity="danger" [text]="true"
+                                title="Excluir" (click)="excluir(tecnico)"></button>
+                        </div>
+                    </td>
+                </tr>
+            </ng-template>
+
+            <ng-template pTemplate="emptymessage">
+                <tr>
+                    <td colspan="5" class="empty-message">
+                        Nenhum técnico cadastrado.
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+
+    <p-dialog [(visible)]="modalVisivel" [modal]="true" [draggable]="false" [resizable]="false"
+        [style]="{ width: '520px' }" [header]="tecnicoEditando ? 'Editar técnico' : 'Novo técnico'">
+        <form class="dialog-form" (ngSubmit)="salvar()">
+            <div class="form-field">
+                <label>Nome do técnico *</label>
+                <input pInputText name="nome" [(ngModel)]="form.nome" autocomplete="off" />
+            </div>
+
+            <div class="form-field">
+                <label>Usuário vinculado</label>
+
+                <p-select [options]="usuarios" optionLabel="descricao" optionValue="id"
+                    placeholder="Selecione um usuário" [(ngModel)]="form.idUsuario" name="idUsuario"
+                    [loading]="carregandoUsuarios" [showClear]="true" appendTo="body" styleClass="w-full"></p-select>
+            </div>
+
+            <div class="form-field">
+                <label>Notificar novos chamados?</label>
+                <select name="notificarNovosChamados" [(ngModel)]="form.notificarNovosChamados">
+                    <option value="S">Sim</option>
+                    <option value="N">Não</option>
+                </select>
+            </div>
+
+            <div class="dialog-actions">
+                <button pButton type="button" label="Cancelar" severity="secondary" [outlined]="true"
+                    (click)="modalVisivel = false"></button>
+
+                <button pButton type="submit" label="Salvar" icon="pi pi-save" [loading]="salvando"></button>
+            </div>
+        </form>
+    </p-dialog>
+</div>
