@@ -31,7 +31,8 @@ export class AdminLayoutComponent {
     { label: 'Produtos por Cliente', icon: 'pi pi-link', route: '/produto-x-cliente' },
     { label: 'Tipos de Ocorrência', icon: 'pi pi-tags', route: '/tipo-ocorrencia' },
     { label: 'Status', icon: 'pi pi-check-circle', route: '/status-ticket' },
-    { label: 'Técnicos', icon: 'pi pi-users', route: '/tecnicos' }
+    { label: 'Técnicos', icon: 'pi pi-users', route: '/tecnicos' },
+    { label: 'Minha Conta', icon: 'pi pi-id-card', route: '/minha-conta' }
   ];
 
   constructor(

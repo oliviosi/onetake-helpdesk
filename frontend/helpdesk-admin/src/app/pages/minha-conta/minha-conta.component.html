@@ -1,0 +1,96 @@
+<div class="minha-conta-page">
+  <div class="page-header">
+    <div>
+      <h1>Minha Conta</h1>
+      <p>Gerencie seus dados de acesso ao HelpDesk.</p>
+    </div>
+  </div>
+
+  <div *ngIf="erro" class="message-area">
+    <p-message severity="error" [text]="erro"></p-message>
+  </div>
+
+  <div *ngIf="sucesso" class="message-area">
+    <p-message severity="success" [text]="sucesso"></p-message>
+  </div>
+
+  <div class="account-grid">
+    <div class="card">
+      <h2>Dados do usuário</h2>
+
+      <div class="info-list">
+        <div>
+          <span>Usuário</span>
+          <strong>{{ usuario()?.nomeUsuario || '-' }}</strong>
+        </div>
+
+        <div>
+          <span>Nome</span>
+          <strong>{{ usuario()?.nomeCompleto || '-' }}</strong>
+        </div>
+
+        <div>
+          <span>Email</span>
+          <strong>{{ usuario()?.email || '-' }}</strong>
+        </div>
+
+        <div>
+          <span>Perfil</span>
+          <strong>{{ usuario()?.ehAdm === 'S' ? 'Administrador' : 'Usuário' }}</strong>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Alterar senha</h2>
+
+      <form class="password-form" (ngSubmit)="alterarSenha()">
+        <div class="form-field">
+          <label>Senha atual *</label>
+          <p-password
+            name="senhaAtual"
+            [(ngModel)]="form.senhaAtual"
+            [feedback]="false"
+            [toggleMask]="true"
+            styleClass="w-full"
+            inputStyleClass="w-full"
+          ></p-password>
+        </div>
+
+        <div class="form-field">
+          <label>Nova senha *</label>
+          <p-password
+            name="novaSenha"
+            [(ngModel)]="form.novaSenha"
+            [feedback]="false"
+            [toggleMask]="true"
+            styleClass="w-full"
+            inputStyleClass="w-full"
+          ></p-password>
+        </div>
+
+        <div class="form-field">
+          <label>Confirmar nova senha *</label>
+          <p-password
+            name="confirmarNovaSenha"
+            [(ngModel)]="form.confirmarNovaSenha"
+            [feedback]="false"
+            [toggleMask]="true"
+            styleClass="w-full"
+            inputStyleClass="w-full"
+          ></p-password>
+        </div>
+
+        <div class="actions">
+          <button
+            pButton
+            type="submit"
+            label="Alterar senha"
+            icon="pi pi-key"
+            [loading]="carregando"
+          ></button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

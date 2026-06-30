@@ -60,6 +60,11 @@ export const routes: Routes = [
                     import('./pages/usuarios/usuarios.component').then(m => m.UsuariosComponent)
             },
             {
+                path: 'minha-conta',
+                loadComponent: () =>
+                    import('./pages/minha-conta/minha-conta.component').then(m => m.MinhaContaComponent)
+            },
+            {
                 path: '',
                 pathMatch: 'full',
                 redirectTo: 'dashboard'
