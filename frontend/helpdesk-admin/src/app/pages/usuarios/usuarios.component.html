@@ -1,0 +1,146 @@
+<div class="usuarios-page">
+    <div class="page-header">
+        <div>
+            <h1>Usuários</h1>
+            <p>Gerencie os usuários que acessam o HelpDesk.</p>
+        </div>
+
+        <button pButton type="button" label="Novo usuário" icon="pi pi-plus" (click)="abrirNovo()"></button>
+    </div>
+
+    <div *ngIf="erro" class="message-area">
+        <p-message severity="error" [text]="erro"></p-message>
+    </div>
+
+    <div *ngIf="sucesso" class="message-area">
+        <p-message severity="success" [text]="sucesso"></p-message>
+    </div>
+
+    <div class="card">
+        <div *ngIf="carregando" class="loading-area">
+            <p-progressSpinner></p-progressSpinner>
+        </div>
+
+        <p-table *ngIf="!carregando" [value]="usuarios" [paginator]="true" [rows]="10"
+            [rowsPerPageOptions]="[10, 20, 50]" [globalFilterFields]="['nomeUsuario', 'nomeCompleto', 'email']"
+            responsiveLayout="scroll" styleClass="p-datatable-sm">
+            <ng-template pTemplate="caption">
+                <div class="table-caption">
+                    <strong>Usuários cadastrados</strong>
+
+                    <button pButton type="button" icon="pi pi-refresh" label="Atualizar" severity="secondary"
+                        [outlined]="true" (click)="carregarUsuarios()"></button>
+                </div>
+            </ng-template>
+
+            <ng-template pTemplate="header">
+                <tr>
+                    <th style="width: 90px">Código</th>
+                    <th>Usuário</th>
+                    <th>Nome completo</th>
+                    <th>Email</th>
+                    <th style="width: 110px">Perfil</th>
+                    <th style="width: 110px">Status</th>
+                    <th style="width: 240px">Ações</th>
+                </tr>
+            </ng-template>
+
+            <ng-template pTemplate="body" let-usuario>
+                <tr>
+                    <td>{{ usuario.idUsuario }}</td>
+
+                    <td>
+                        <strong>{{ usuario.nomeUsuario }}</strong>
+                    </td>
+
+                    <td>{{ usuario.nomeCompleto || '-' }}</td>
+
+                    <td>{{ usuario.email || '-' }}</td>
+
+                    <td>
+                        <p-tag [severity]="admSeverity(usuario.ehAdm)" [value]="admLabel(usuario.ehAdm)"></p-tag>
+                    </td>
+
+                    <td>
+                        <p-tag [severity]="statusSeverity(usuario.ativo)" [value]="statusLabel(usuario.ativo)"></p-tag>
+                    </td>
+
+                    <td>
+                        <div class="actions">
+                            <button pButton type="button" label="Editar" severity="secondary" [outlined]="true"
+                                (click)="abrirEdicao(usuario)"></button>
+
+                            <button pButton type="button" label="Desativar" severity="danger" [outlined]="true"
+                                *ngIf="usuario.ativo === 'S'" (click)="desativar(usuario)"></button>
+
+                            <button pButton type="button" label="Ativar" severity="success" [outlined]="true"
+                                *ngIf="usuario.ativo === 'N'" (click)="ativar(usuario)"></button>
+                        </div>
+                    </td>
+                </tr>
+            </ng-template>
+
+            <ng-template pTemplate="emptymessage">
+                <tr>
+                    <td colspan="7" class="empty-message">
+                        Nenhum usuário cadastrado.
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+
+    <p-dialog [(visible)]="modalVisivel" [modal]="true" [draggable]="false" [resizable]="false"
+        [style]="{ width: '620px' }" [header]="usuarioEditando ? 'Editar usuário' : 'Novo usuário'">
+        <form class="dialog-form" (ngSubmit)="salvar()">
+            <div class="form-grid">
+                <div class="form-field">
+                    <label>Usuário *</label>
+                    <input pInputText name="nomeUsuario" [(ngModel)]="form.nomeUsuario" autocomplete="off" />
+                </div>
+
+                <div class="form-field" *ngIf="!usuarioEditando">
+                    <label>Senha *</label>
+                    <p-password name="senha" [(ngModel)]="form.senha" [feedback]="false" [toggleMask]="true"
+                        styleClass="w-full" inputStyleClass="w-full"></p-password>
+                </div>
+            </div>
+
+            <div class="form-field">
+                <label>Nome completo</label>
+                <input pInputText name="nomeCompleto" [(ngModel)]="form.nomeCompleto" autocomplete="off" />
+            </div>
+
+            <div class="form-field">
+                <label>Email</label>
+                <input pInputText name="email" [(ngModel)]="form.email" autocomplete="off" />
+            </div>
+
+            <div class="form-grid">
+                <div class="form-field">
+                    <label>Administrador?</label>
+                    <select name="ehAdm" [(ngModel)]="form.ehAdm">
+                        <option value="N">Não</option>
+                        <option value="S">Sim</option>
+                    </select>
+                </div>
+
+                <div class="form-field" *ngIf="usuarioEditando">
+                    <label>Status</label>
+                    <select name="ativo" [(ngModel)]="form.ativo">
+                        <option value="S">Ativo</option>
+                        <option value="N">Inativo</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="dialog-actions">
+                <button pButton type="button" label="Cancelar" severity="secondary" [outlined]="true"
+                    (click)="modalVisivel = false"></button>
+
+                <button pButton type="submit" label="Salvar" icon="pi pi-save" [loading]="salvando"></button>
+            </div>
+        </form>
+    </p-dialog>
+
+</div>

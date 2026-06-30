@@ -55,6 +55,11 @@ export const routes: Routes = [
                     import('./pages/tickets/tickets.component').then(m => m.TicketsComponent)
             },
             {
+                path: 'usuarios',
+                loadComponent: () =>
+                    import('./pages/usuarios/usuarios.component').then(m => m.UsuariosComponent)
+            },
+            {
                 path: '',
                 pathMatch: 'full',
                 redirectTo: 'dashboard'

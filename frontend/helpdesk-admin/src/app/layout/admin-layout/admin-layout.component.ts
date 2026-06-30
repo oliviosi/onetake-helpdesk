@@ -26,6 +26,7 @@ export class AdminLayoutComponent {
     { label: 'Dashboard', icon: 'pi pi-home', route: '/dashboard' },
     { label: 'Tickets', icon: 'pi pi-ticket', route: '/tickets' },
     { label: 'Clientes', icon: 'pi pi-building', route: '/clientes' },
+    { label: 'Usuários', icon: 'pi pi-user', route: '/usuarios' },
     { label: 'Produtos', icon: 'pi pi-box', route: '/produtos' },
     { label: 'Produtos por Cliente', icon: 'pi pi-link', route: '/produto-x-cliente' },
     { label: 'Tipos de Ocorrência', icon: 'pi pi-tags', route: '/tipo-ocorrencia' },
