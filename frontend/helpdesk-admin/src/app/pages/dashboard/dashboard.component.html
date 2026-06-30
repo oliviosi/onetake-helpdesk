@@ -4,45 +4,127 @@
     <p>Visão geral da operação do HelpDesk.</p>
   </div>
 
-  <div class="cards-grid">
-    <div class="metric-card">
-      <span class="icon blue">
-        <i class="pi pi-ticket"></i>
-      </span>
-      <div>
-        <strong>0</strong>
-        <p>Tickets abertos</p>
-      </div>
-    </div>
-
-    <div class="metric-card">
-      <span class="icon orange">
-        <i class="pi pi-clock"></i>
-      </span>
-      <div>
-        <strong>0</strong>
-        <p>Em atendimento</p>
-      </div>
-    </div>
-
-    <div class="metric-card">
-      <span class="icon green">
-        <i class="pi pi-check-circle"></i>
-      </span>
-      <div>
-        <strong>0</strong>
-        <p>Fechados</p>
-      </div>
-    </div>
-
-    <div class="metric-card">
-      <span class="icon purple">
-        <i class="pi pi-building"></i>
-      </span>
-      <div>
-        <strong>0</strong>
-        <p>Clientes ativos</p>
-      </div>
-    </div>
+  <div *ngIf="erro" class="message-area">
+    <p-message severity="error" [text]="erro"></p-message>
   </div>
+
+  <div *ngIf="carregando" class="loading-area">
+    <p-progressSpinner></p-progressSpinner>
+  </div>
+
+  <ng-container *ngIf="!carregando">
+    <div class="cards-grid">
+      <div class="metric-card">
+        <span class="icon blue">
+          <i class="pi pi-ticket"></i>
+        </span>
+
+        <div>
+          <strong>{{ totalTickets }}</strong>
+          <p>Total de tickets</p>
+        </div>
+      </div>
+
+      <div class="metric-card">
+        <span class="icon red">
+          <i class="pi pi-exclamation-circle"></i>
+        </span>
+
+        <div>
+          <strong>{{ totalAbertos }}</strong>
+          <p>Abertos</p>
+        </div>
+      </div>
+
+      <div class="metric-card">
+        <span class="icon orange">
+          <i class="pi pi-clock"></i>
+        </span>
+
+        <div>
+          <strong>{{ totalAndamento }}</strong>
+          <p>Em atendimento</p>
+        </div>
+      </div>
+
+      <div class="metric-card">
+        <span class="icon green">
+          <i class="pi pi-check-circle"></i>
+        </span>
+
+        <div>
+          <strong>{{ totalFechados }}</strong>
+          <p>Fechados</p>
+        </div>
+      </div>
+
+      <div class="metric-card">
+        <span class="icon dark">
+          <i class="pi pi-ban"></i>
+        </span>
+
+        <div>
+          <strong>{{ totalCancelados }}</strong>
+          <p>Cancelados</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card recent-card">
+      <div class="section-title">
+        <div>
+          <h2>Últimos tickets</h2>
+          <p>Chamados mais recentes cadastrados no sistema.</p>
+        </div>
+      </div>
+
+      <p-table [value]="ultimosTickets()" responsiveLayout="scroll" styleClass="p-datatable-sm">
+        <ng-template pTemplate="header">
+          <tr>
+            <th style="width: 90px">Código</th>
+            <th style="width: 160px">Abertura</th>
+            <th>Cliente</th>
+            <th>Assunto</th>
+            <th style="width: 120px">Prioridade</th>
+            <th style="width: 150px">Status</th>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-ticket>
+          <tr>
+            <td>
+              <strong>#{{ ticket.idTicket }}</strong>
+            </td>
+
+            <td>{{ formatarData(ticket.dtHrAbertura) }}</td>
+
+            <td>
+              <strong>{{ ticket.dscCliente }}</strong>
+              <div class="muted">{{ ticket.nomeUsuario }}</div>
+            </td>
+
+            <td>{{ ticket.assunto }}</td>
+
+            <td>
+              <p-tag [severity]="severityPrioridade(ticket.prioridade)" [value]="ticket.prioridade"></p-tag>
+            </td>
+
+            <td>
+              <span class="status-badge" [ngClass]="classeStatus(ticket)">
+                {{ labelStatus(ticket) }}
+              </span>
+            </td>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="6" class="empty-message">
+              Nenhum ticket encontrado.
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </ng-container>
 </div>
