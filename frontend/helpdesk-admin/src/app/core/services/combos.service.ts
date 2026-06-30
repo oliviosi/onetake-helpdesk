@@ -29,4 +29,9 @@ export class CombosService {
     usuarios(): Observable<ResponseModel<Combo[]>> {
         return this.http.get<ResponseModel<Combo[]>>(`${this.apiUrl}/usuarios`);
     }
+
+
+    tiposOcorrencia(): Observable<ResponseModel<Combo[]>> {
+        return this.http.get<ResponseModel<Combo[]>>(`${this.apiUrl}/tipos-ocorrencia`);
+    }
 }

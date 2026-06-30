@@ -50,6 +50,11 @@ export const routes: Routes = [
                     import('./pages/tecnicos/tecnicos.component').then(m => m.TecnicosComponent)
             },
             {
+                path: 'tickets',
+                loadComponent: () =>
+                    import('./pages/tickets/tickets.component').then(m => m.TicketsComponent)
+            },
+            {
                 path: '',
                 pathMatch: 'full',
                 redirectTo: 'dashboard'

@@ -1,0 +1,275 @@
+<div class="tickets-page">
+    <div class="page-header">
+        <div>
+            <h1>Tickets</h1>
+            <p>Gerencie os chamados abertos pelos clientes.</p>
+        </div>
+
+        <button pButton type="button" label="Novo ticket" icon="pi pi-plus" (click)="abrirNovo()"></button>
+    </div>
+
+    <div *ngIf="erro" class="message-area">
+        <p-message severity="error" [text]="erro"></p-message>
+    </div>
+
+    <div *ngIf="sucesso" class="message-area">
+        <p-message severity="success" [text]="sucesso"></p-message>
+    </div>
+
+    <div class="card">
+        <div *ngIf="carregando" class="loading-area">
+            <p-progressSpinner></p-progressSpinner>
+        </div>
+
+        <p-table *ngIf="!carregando" [value]="tickets" [paginator]="true" [rows]="10"
+            [rowsPerPageOptions]="[10, 20, 50]" [globalFilterFields]="[
+        'idTicket',
+        'dscCliente',
+        'nomeUsuario',
+        'assunto',
+        'dscTipoOcorrencia',
+        'prioridade',
+        'dscStatusTicket'
+      ]" responsiveLayout="scroll" styleClass="p-datatable-sm">
+            <ng-template pTemplate="caption">
+                <div class="table-caption">
+                    <strong>Tickets cadastrados</strong>
+
+                    <button pButton type="button" icon="pi pi-refresh" label="Atualizar" severity="secondary"
+                        [outlined]="true" (click)="carregarTickets()"></button>
+                </div>
+            </ng-template>
+
+            <ng-template pTemplate="header">
+                <tr>
+                    <th style="width: 90px">Código</th>
+                    <th style="width: 160px">Abertura</th>
+                    <th>Cliente</th>
+                    <th>Assunto</th>
+                    <th style="width: 170px">Tipo</th>
+                    <th style="width: 120px">Prioridade</th>
+                    <th style="width: 150px">Status</th>
+                    <th style="width: 130px">Ações</th>
+                </tr>
+            </ng-template>
+
+            <ng-template pTemplate="body" let-ticket>
+                <tr>
+                    <td>
+                        <strong>#{{ ticket.idTicket }}</strong>
+                    </td>
+
+                    <td>{{ formatarData(ticket.dtHrAbertura) }}</td>
+
+                    <td>
+                        <strong>{{ ticket.dscCliente }}</strong>
+                        <div class="muted">{{ ticket.nomeUsuario }}</div>
+                    </td>
+
+                    <td>{{ ticket.assunto }}</td>
+
+                    <td>{{ ticket.dscTipoOcorrencia }}</td>
+
+                    <td>
+                        <p-tag [severity]="severityPrioridade(ticket.prioridade)" [value]="ticket.prioridade"></p-tag>
+                    </td>
+
+                    <td>
+                        <span class="status-badge" [ngClass]="classeStatus(ticket)">
+                            {{ labelStatus(ticket) }}
+                        </span>
+                    </td>
+
+                    <td>
+                        <div class="actions">
+                            <button pButton type="button" label="Ver" severity="secondary" [outlined]="true"
+                                (click)="abrirDetalhe(ticket)"></button>
+                        </div>
+                    </td>
+                </tr>
+            </ng-template>
+
+            <ng-template pTemplate="emptymessage">
+                <tr>
+                    <td colspan="8" class="empty-message">
+                        Nenhum ticket cadastrado.
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+
+    <p-dialog [(visible)]="modalNovoVisivel" [modal]="true" [draggable]="false" [resizable]="false"
+        [style]="{ width: '760px' }" header="Novo ticket">
+        <form class="dialog-form" (ngSubmit)="salvarNovo()">
+            <div class="form-grid">
+                <div class="form-field">
+                    <label>Cliente *</label>
+                    <p-select [options]="clientes" optionLabel="descricao" optionValue="id"
+                        placeholder="Selecione o cliente" [(ngModel)]="formNovo.idCliente" name="idCliente"
+                        [loading]="carregandoCombos" appendTo="body" styleClass="w-full"></p-select>
+                </div>
+
+                <div class="form-field">
+                    <label>Usuário solicitante *</label>
+                    <p-select [options]="usuarios" optionLabel="descricao" optionValue="id"
+                        placeholder="Selecione o usuário" [(ngModel)]="formNovo.idUsuario" name="idUsuario"
+                        [loading]="carregandoCombos" appendTo="body" styleClass="w-full"></p-select>
+                </div>
+            </div>
+
+            <div class="form-grid">
+                <div class="form-field">
+                    <label>Tipo de ocorrência *</label>
+                    <p-select [options]="tiposOcorrencia" optionLabel="descricao" optionValue="id"
+                        placeholder="Selecione o tipo" [(ngModel)]="formNovo.idTipoOcorrencia" name="idTipoOcorrencia"
+                        [loading]="carregandoCombos" appendTo="body" styleClass="w-full"></p-select>
+                </div>
+
+                <div class="form-field">
+                    <label>Prioridade *</label>
+                    <p-select [options]="prioridades" optionLabel="label" optionValue="value" placeholder="Selecione"
+                        [(ngModel)]="formNovo.prioridade" name="prioridade" appendTo="body"
+                        styleClass="w-full"></p-select>
+                </div>
+            </div>
+
+            <div class="form-field">
+                <label>Assunto *</label>
+                <input pInputText name="assunto" [(ngModel)]="formNovo.assunto" autocomplete="off" />
+            </div>
+
+            <div class="form-field">
+                <label>Descrição *</label>
+                <textarea pTextarea name="dscTicket" [(ngModel)]="formNovo.dscTicket" rows="5"></textarea>
+            </div>
+
+            <div class="dialog-actions">
+                <button pButton type="button" label="Cancelar" severity="secondary" [outlined]="true"
+                    (click)="modalNovoVisivel = false"></button>
+
+                <button pButton type="submit" label="Salvar" icon="pi pi-save" [loading]="salvando"></button>
+            </div>
+        </form>
+    </p-dialog>
+
+    <p-dialog [(visible)]="modalDetalheVisivel" [modal]="true" [draggable]="false" [resizable]="false"
+        [style]="{ width: '920px' }"
+        [header]="ticketDetalhe ? 'Ticket #' + ticketDetalhe.idTicket : 'Detalhe do ticket'">
+        <div *ngIf="carregandoDetalhe" class="loading-area">
+            <p-progressSpinner></p-progressSpinner>
+        </div>
+
+        <div *ngIf="!carregandoDetalhe && ticketDetalhe" class="ticket-detail">
+            <div class="detail-header">
+                <div>
+                    <h2>{{ ticketDetalhe.assunto }}</h2>
+                    <p>{{ ticketDetalhe.dscCliente }} - {{ ticketDetalhe.nomeUsuario }}</p>
+                </div>
+
+                <span class="status-badge" [ngClass]="classeStatus(ticketDetalhe)">
+                    {{ labelStatus(ticketDetalhe) }}
+                </span>
+            </div>
+
+            <div class="detail-grid">
+                <div>
+                    <strong>Abertura</strong>
+                    <span>{{ formatarData(ticketDetalhe.dtHrAbertura) }}</span>
+                </div>
+
+                <div>
+                    <strong>Tipo</strong>
+                    <span>{{ ticketDetalhe.dscTipoOcorrencia }}</span>
+                </div>
+
+                <div>
+                    <strong>Prioridade</strong>
+                    <span>{{ ticketDetalhe.prioridade }}</span>
+                </div>
+
+                <div>
+                    <strong>Finalização</strong>
+                    <span>{{ formatarData(ticketDetalhe.dtHrFinalizacao) }}</span>
+                </div>
+            </div>
+
+            <div class="description-box">
+                <strong>Descrição</strong>
+                <p>{{ ticketDetalhe.dscTicket }}</p>
+            </div>
+
+            <div class="ticket-actions-panel" *ngIf="ticketPodeReceberAcao()">
+                <h3>Responder ticket</h3>
+
+                <div class="form-grid">
+                    <div class="form-field">
+                        <label>Técnico *</label>
+                        <p-select [options]="tecnicos" optionLabel="nome" optionValue="idTecnico"
+                            placeholder="Selecione o técnico" [(ngModel)]="formResposta.idTecnico"
+                            name="idTecnicoResposta" appendTo="body" styleClass="w-full"></p-select>
+                    </div>
+
+                    <div class="form-field">
+                        <label>Aguardar cliente?</label>
+                        <select name="aguardarInteracaoUsuario" [(ngModel)]="formResposta.aguardarInteracaoUsuario">
+                            <option value="N">Não</option>
+                            <option value="S">Sim</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-field">
+                    <label>Mensagem *</label>
+                    <textarea pTextarea name="mensagemResposta" [(ngModel)]="formResposta.mensagem" rows="4"></textarea>
+                </div>
+
+                <div class="detail-actions">
+                    <button pButton type="button" label="Responder" icon="pi pi-send" [loading]="salvando"
+                        (click)="responderTicket()"></button>
+                </div>
+            </div>
+
+            <div class="ticket-actions-panel" *ngIf="ticketPodeReceberAcao()">
+                <h3>Finalização</h3>
+
+                <div class="form-grid">
+                    <div class="form-field">
+                        <label>Técnico de finalização *</label>
+                        <p-select [options]="tecnicos" optionLabel="nome" optionValue="idTecnico"
+                            placeholder="Selecione o técnico" [(ngModel)]="formFechamento.idTecnico"
+                            name="idTecnicoFechamento" appendTo="body" styleClass="w-full"></p-select>
+                    </div>
+                </div>
+
+                <div class="detail-actions">
+                    <button pButton type="button" label="Fechar ticket" icon="pi pi-check" severity="success"
+                        [loading]="salvando" (click)="fecharTicket()"></button>
+
+                    <button pButton type="button" label="Cancelar ticket" icon="pi pi-ban" severity="danger"
+                        [outlined]="true" [loading]="salvando" (click)="cancelarTicket()"></button>
+                </div>
+            </div>
+
+            <div class="interactions">
+                <h3>Histórico de interações</h3>
+
+                <div *ngFor="let interacao of ticketDetalhe.interacoes" class="interaction-item">
+                    <div class="interaction-top">
+                        <strong>
+                            {{ interacao.nomeTecnico || interacao.nomeUsuario || 'Usuário' }}
+                        </strong>
+
+                        <span>{{ formatarData(interacao.dtHrInteracao) }}</span>
+                    </div>
+
+                    <p>{{ interacao.dscInteracao }}</p>
+                </div>
+
+                <div *ngIf="ticketDetalhe.interacoes.length === 0" class="empty-message">
+                    Nenhuma interação encontrada.
+                </div>
+            </div>
+        </div>
+    </p-dialog>
+</div>
